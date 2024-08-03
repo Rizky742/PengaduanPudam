@@ -17,7 +17,7 @@ final class GetPengaduanEvent extends PengaduanEvent {
 }
 
 final class GetFilterPengaduanEventFilter extends PengaduanEvent {
-  String filter;
+  final String filter;
 
   GetFilterPengaduanEventFilter(this.filter);
 }
