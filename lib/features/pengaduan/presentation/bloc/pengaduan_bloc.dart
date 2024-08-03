@@ -17,7 +17,7 @@ class PengaduanBloc extends Bloc<PengaduanEvent, PengaduanState> {
           month: event.month, year: event.year, id: event.id, role: event.role);
       pengaduan.fold(
         (failure) => emit(PengaduanError(failure.message)),
-        (pengaduan) => emit(PengaduanLoaded(pengaduan)),
+        (pengaduan) => emit(PengaduanLoaded(pengaduan: pengaduan)),
       );
     });
 
@@ -26,7 +26,16 @@ class PengaduanBloc extends Bloc<PengaduanEvent, PengaduanState> {
       if (state is PengaduanLoaded) {
         final currentState = state as PengaduanLoaded;
         // Emit the same state if filtering logic is not implemented
-        emit(PengaduanLoaded(currentState.pengaduan));
+        emit(PengaduanLoaded(pengaduan: currentState.pengaduan));
+      }
+    });
+
+    on<GetFilterPengaduanEventFilter>((event, emit) {
+      if (state is PengaduanLoaded) {
+        final currentState = state as PengaduanLoaded;
+        // Emit the same state if filtering logic is not implemented
+        emit(PengaduanLoaded(
+            pengaduan: currentState.pengaduan, filter: event.filter));
       }
     });
   }

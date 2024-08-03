@@ -17,7 +17,7 @@ class PengaduanScreen extends StatelessWidget {
     TextEditingController search = TextEditingController();
     String role = '';
     String id = '';
-    String filter = '';
+    // String filter = '';
     var safeAreaPadding = MediaQuery.of(context).padding;
     final periode = context.read<PeriodeBloc>().state;
     final data = context.read<AuthBloc>().state;
@@ -60,7 +60,7 @@ class PengaduanScreen extends StatelessWidget {
                   jumpToHome: true,
                 ),
                 SizedBox(height: 32.h), // Add spacing between rows
-                SearchFliterWidget(controller: search, filter: filter),
+                SearchFliterWidget(controller: search),
                 Expanded(
                   child: BlocBuilder<PengaduanBloc, PengaduanState>(
                     builder: (context, state) {
@@ -69,6 +69,7 @@ class PengaduanScreen extends StatelessWidget {
                           child: CircularProgressIndicator(),
                         );
                       } else if (state is PengaduanLoaded) {
+                        final filter = state.filter ?? '';
                         final filtered = state.pengaduan.where(
                           (element) {
                             final name = element.nama

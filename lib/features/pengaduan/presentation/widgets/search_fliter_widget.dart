@@ -11,11 +11,9 @@ class SearchFliterWidget extends StatelessWidget {
   SearchFliterWidget({
     super.key,
     required this.controller,
-    required this.filter,
   });
 
   TextEditingController controller;
-  String filter;
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +67,7 @@ class SearchFliterWidget extends StatelessWidget {
               'assets/filter_icon.svg',
             ),
             onSelected: (String value) {
-              filter = value;
-              context.read<PengaduanBloc>().add(GetFilterPengaduanEvent());
+              context.read<PengaduanBloc>().add(GetFilterPengaduanEventFilter(value));
             },
             color: white,
             shadowColor: Colors.black,
