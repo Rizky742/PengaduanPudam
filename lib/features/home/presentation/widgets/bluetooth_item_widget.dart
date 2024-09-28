@@ -48,9 +48,6 @@ class BluetoothItemWidget extends StatelessWidget {
                   title,
                   style: heading3.copyWith(color: vampireBlack),
                 ),
-                // SizedBox(
-                //   height: 6.h,
-                // ),
                 Text(
                   statusText,
                   style: caption1.copyWith(color: statusColor),

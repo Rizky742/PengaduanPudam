@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pengaduan/theme.dart';
 
-
 class DateWidget extends StatelessWidget {
   const DateWidget({
     super.key,
@@ -54,6 +53,12 @@ class DateWidget extends StatelessWidget {
               )
             ]),
             child: DropdownButtonFormField<String>(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Tanggal belum terisi';
+                }
+                return null;
+              },
               icon: SvgPicture.asset('assets/arrow_bottom_icon.svg'),
               style: caption1.copyWith(color: vampireBlack),
               dropdownColor: white,
@@ -100,6 +105,12 @@ class DateWidget extends StatelessWidget {
               )
             ]),
             child: DropdownButtonFormField<String>(
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Bulan belum terisi';
+                }
+                return null;
+              },
               icon: SvgPicture.asset('assets/arrow_bottom_icon.svg'),
               borderRadius: BorderRadius.circular(8.r),
               dropdownColor: white,
@@ -143,6 +154,12 @@ class DateWidget extends StatelessWidget {
         Expanded(
           flex: 1,
           child: DropdownButtonFormField<String>(
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Tahun belum terisi';
+              }
+              return null;
+            },
             style: caption1.copyWith(color: vampireBlack),
             dropdownColor: white,
             focusColor: white,

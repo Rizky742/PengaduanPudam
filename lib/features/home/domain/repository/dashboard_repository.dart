@@ -7,6 +7,8 @@ abstract interface class DashboardRepository {
   Future<Either<Failure, Dashboard>> getDashboardByPeriode({
     required String month,
     required String year,
+    required int divisiId,
+    required String petugasId
   });
   Future<Either<Failure, List<Periode>>> getPeriode();
 }

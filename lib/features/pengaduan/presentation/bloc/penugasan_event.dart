@@ -6,16 +6,16 @@ sealed class PenugasanEvent {}
 final class LoadPenugasan extends PenugasanEvent {}
 
 final class SelectPetugas extends PenugasanEvent {
-  final String petugas;
+  final Petugas petugas;
 
   SelectPetugas(this.petugas);
 }
 
 final class SelectDate extends PenugasanEvent {
-   final String day;
-  final String month;
-  final String year;
+   final String? day;
+  final String? month;
+  final String? year;
 
-  SelectDate(this.day, this.month, this.year);
+  SelectDate({this.day, this.month, this.year});
 }
 

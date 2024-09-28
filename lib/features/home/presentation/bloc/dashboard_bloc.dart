@@ -18,7 +18,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
       (event, emit) async {
         emit(DashboardLoading());
         final getDashboard = await getDashboardByPeriode.call(
-            month: event.month, year: event.year);
+            month: event.month, year: event.year, divisiId: event.divisiId,petugasId: event.petugasId);
         getDashboard.fold(
           (failure) {
             emit(DashboardError(failure.message));
@@ -29,8 +29,6 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
         );
       },
     );
-
-    
 
     // on<GetPeriodeEvent>(
     //   (event, emit) async {

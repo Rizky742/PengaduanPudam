@@ -15,10 +15,12 @@ class AuthField extends StatelessWidget {
     required this.title,
     required this.hintText,
     required this.type,
+    required this.input,
   });
   final TextEditingController controller;
   final String title;
   final String hintText;
+  final TextInputAction input;
   Type type;
 
   @override
@@ -50,6 +52,7 @@ class AuthField extends StatelessWidget {
               obscureText = state.obscureText;
             }
             return TextFormField(
+              textInputAction: input,
               validator: (value) {
                 if (value!.isEmpty) {
                   return "$title belum terisi";
@@ -64,9 +67,7 @@ class AuthField extends StatelessWidget {
                     ? IconButton(
                         onPressed: () {
                           // ref.read(obscureText.notifier).state = !isVisible;
-                          context
-                              .read<UiBloc>()
-                              .add(ToggleObscureTextEvent());
+                          context.read<UiBloc>().add(ToggleObscureTextEvent());
                         },
                         icon: SvgPicture.asset(
                           obscureText

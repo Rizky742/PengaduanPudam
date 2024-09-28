@@ -21,7 +21,6 @@ class HeaderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pageController = context.read<NavigationBloc>().pageController;
     return Stack(
       children: [
         Center(
@@ -35,6 +34,8 @@ class HeaderWidget extends StatelessWidget {
           child: GestureDetector(
             onTap: () {
               if (jumpToHome == true) {
+                final pageController =
+                    context.read<NavigationBloc>().pageController;
                 pageController.jumpToPage(0);
               } else if (jumpToPage != null) {
                 Navigator.push(

@@ -19,7 +19,7 @@ class ProfileWidget extends StatelessWidget {
     return Row(
       children: [
         CircleAvatar(
-          radius: 20.w,
+          radius: 20.r,
           backgroundImage: AssetImage(profilePic),
         ),
         SizedBox(

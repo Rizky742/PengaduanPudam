@@ -11,10 +11,13 @@ class DashboardRepositoryImpl implements DashboardRepository {
 
   @override
   Future<Either<Failure, Dashboard>> getDashboardByPeriode(
-      {required String month, required String year}) async {
+      {required String month,
+      required String year,
+      required int divisiId,
+      required String petugasId}) async {
     try {
       final dashboard = await remoteDatasource.getDashboardByPeriode(
-          month: month, year: year);
+          month: month, year: year, divisiId: divisiId, petugasId: petugasId);
       return right(dashboard);
     } catch (e) {
       if (e is ServerFailure) {
@@ -28,7 +31,7 @@ class DashboardRepositoryImpl implements DashboardRepository {
   }
 
   @override
-  Future<Either<Failure, List<Periode>>> getPeriode() async{
+  Future<Either<Failure, List<Periode>>> getPeriode() async {
     try {
       final periode = await remoteDatasource.getPeriode();
       return right(periode);

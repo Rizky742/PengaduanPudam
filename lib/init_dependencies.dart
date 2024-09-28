@@ -14,10 +14,19 @@ import 'package:pengaduan/features/home/presentation/bloc/periode_bloc.dart';
 import 'package:pengaduan/features/pengaduan/data/datasources/pengaduan_remote_datasource.dart';
 import 'package:pengaduan/features/pengaduan/data/repository/pengaduan_repository_impl.dart';
 import 'package:pengaduan/features/pengaduan/domain/repository/pengaduan_repository.dart';
+import 'package:pengaduan/features/pengaduan/domain/usecases/get_jenis_penyelesaian.dart';
 import 'package:pengaduan/features/pengaduan/domain/usecases/get_pengaduan.dart';
+import 'package:pengaduan/features/pengaduan/domain/usecases/get_penugasan.dart';
+import 'package:pengaduan/features/pengaduan/domain/usecases/get_penyelesaian_by_id.dart';
 import 'package:pengaduan/features/pengaduan/domain/usecases/get_petugas.dart';
+import 'package:pengaduan/features/pengaduan/domain/usecases/send_penugasan.dart';
+import 'package:pengaduan/features/pengaduan/domain/usecases/send_penyelesaian.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/get_penugasan_bloc.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/jenis_penyelesaian_bloc.dart';
 import 'package:pengaduan/features/pengaduan/presentation/bloc/pengaduan_bloc.dart';
 import 'package:pengaduan/features/pengaduan/presentation/bloc/petugas_bloc.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/send_data_penyelesaian_bloc.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/send_penugasan_bloc.dart';
 
 final serviceLocator = GetIt.instance;
 
@@ -67,13 +76,39 @@ void _initAuth() {
       () => GetPengaduan(serviceLocator()),
     )
     ..registerFactory(
+      () => GetJenisPenyelesaian(serviceLocator()),
+    )
+    ..registerFactory(
       () => GetPetugas(serviceLocator()),
+    )
+    ..registerFactory(
+      () => SendPenugasan(serviceLocator()),
+    )
+    ..registerFactory(
+      () => SendPenyelesaian(serviceLocator()),
+    )
+    ..registerFactory(
+      () => GetPenugasan(serviceLocator()),
+    )
+    ..registerFactory(
+      () => GetPenyelesaianById(serviceLocator()),
+    )
+    ..registerFactory(
+      () => SendDataPenyelesaianBloc(serviceLocator(), serviceLocator()),
     )
     ..registerFactory(
       () => PengaduanBloc(serviceLocator()),
     )
-
-     ..registerFactory(
+    ..registerFactory(
+      () => JenisPenyelesaianBloc(serviceLocator()),
+    )
+    ..registerFactory(
       () => PetugasBloc(serviceLocator()),
+    )
+    ..registerFactory(
+      () => SendPenugasanBloc(serviceLocator()),
+    )
+    ..registerFactory(
+      () => GetPenugasanBloc(serviceLocator()),
     );
 }

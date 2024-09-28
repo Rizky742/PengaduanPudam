@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pengaduan/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pengaduan/features/auth/presentation/bloc/ui_bloc.dart';
+import 'package:pengaduan/features/auth/presentation/widgets/set_up_url.dart';
 import 'package:pengaduan/features/home/presentation/pages/home_page_screen.dart';
 import 'package:pengaduan/features/pengaduan/presentation/widgets/custom_button_bottom.dart';
 import 'package:pengaduan/theme.dart';
@@ -12,14 +13,13 @@ import '../widgets/check_box_button.dart';
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
+  static final formKey = GlobalKey<FormState>();
+  static final TextEditingController emailController = TextEditingController();
+  static final TextEditingController passwordController =
+      TextEditingController();
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    // final isCheckbox = ref.watch(checkboxProvider);
-    // final emailController = ref.watch(emailProvider);
-    // final passwordController = ref.watch(passwordProvider);
-    final TextEditingController emailController = TextEditingController();
-    final TextEditingController passwordController = TextEditingController();
+    var safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -31,7 +31,24 @@ class LoginPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 121.h,
+                  height: safeAreaPadding.top + 12.h,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(8.w),
+                      decoration: BoxDecoration(
+                        border: Border.all(width: 1.w, color: brightGray),
+                        borderRadius: BorderRadius.circular(40.r),
+                        // border:
+                      ),
+                      child: const SetUpURL(),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 40.h,
                 ),
                 Center(
                   child: Image.asset(
@@ -62,6 +79,7 @@ class LoginPage extends StatelessWidget {
                   hintText: "Masukkan Username",
                   title: 'Username',
                   type: Type.email,
+                  input: TextInputAction.next,
                 ),
                 SizedBox(
                   height: 16.h,
@@ -71,13 +89,13 @@ class LoginPage extends StatelessWidget {
                   title: 'Kata Sandi',
                   hintText: 'Masukkan Kata Sandi',
                   type: Type.password,
+                  input: TextInputAction.none,
                 ),
                 BlocBuilder<UiBloc, UiState>(builder: (context, state) {
                   if (state is UiInitial) {
                     return CheckBoxButton(
                       isCheckbox: state.rememberMe,
                       onChanged: (bool? value) {
-                        // ref.read(checkboxProvider.notifier).state = !isCheckbox;
                         context.read<UiBloc>().add(ToggleRememberMeEvent());
                       },
                     );

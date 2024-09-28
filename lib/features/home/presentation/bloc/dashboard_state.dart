@@ -14,6 +14,7 @@ final class DashboardLoaded extends DashboardState {
 
 final class DashboardLoadedPeriode extends DashboardState {
   final List<Periode> periode;
+  
 
   DashboardLoadedPeriode(this.periode);
 }

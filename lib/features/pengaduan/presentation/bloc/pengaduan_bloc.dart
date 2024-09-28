@@ -10,7 +10,6 @@ class PengaduanBloc extends Bloc<PengaduanEvent, PengaduanState> {
   final GetPengaduan getPengaduan;
 
   PengaduanBloc(this.getPengaduan) : super(PengaduanInitial()) {
-    // Handler for GetPengaduanEvent
     on<GetPengaduanEvent>((event, emit) async {
       emit(PengaduanLoading());
       final pengaduan = await getPengaduan.call(
@@ -21,11 +20,9 @@ class PengaduanBloc extends Bloc<PengaduanEvent, PengaduanState> {
       );
     });
 
-    // Handler for GetFilterPengaduanEvent
     on<GetFilterPengaduanEvent>((event, emit) {
       if (state is PengaduanLoaded) {
         final currentState = state as PengaduanLoaded;
-        // Emit the same state if filtering logic is not implemented
         emit(PengaduanLoaded(pengaduan: currentState.pengaduan));
       }
     });
@@ -33,7 +30,6 @@ class PengaduanBloc extends Bloc<PengaduanEvent, PengaduanState> {
     on<GetFilterPengaduanEventFilter>((event, emit) {
       if (state is PengaduanLoaded) {
         final currentState = state as PengaduanLoaded;
-        // Emit the same state if filtering logic is not implemented
         emit(PengaduanLoaded(
             pengaduan: currentState.pengaduan, filter: event.filter));
       }

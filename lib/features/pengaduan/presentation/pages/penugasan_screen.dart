@@ -1,11 +1,14 @@
-
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pengaduan/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:pengaduan/features/pengaduan/domain/entitites/petugas.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/penugasan_bloc.dart';
 import 'package:pengaduan/features/pengaduan/presentation/bloc/petugas_bloc.dart';
+import 'package:pengaduan/features/pengaduan/presentation/bloc/send_penugasan_bloc.dart';
+import 'package:pengaduan/features/pengaduan/presentation/helper/month_converter.dart';
 import 'package:pengaduan/features/pengaduan/presentation/pages/bukti_penugasan.dart';
 import 'package:pengaduan/features/pengaduan/presentation/widgets/custom_button_bottom.dart';
 import 'package:pengaduan/features/pengaduan/presentation/widgets/date_widget.dart';
@@ -18,6 +21,7 @@ class PenugasanScreen extends StatelessWidget {
   const PenugasanScreen({
     super.key,
     required this.noAduan,
+    required this.idAduan,
     this.noPelanggan,
     required this.nama,
     required this.alamat,
@@ -27,6 +31,7 @@ class PenugasanScreen extends StatelessWidget {
   });
 
   final String? noPelanggan;
+  final String idAduan;
   final String noAduan;
   final String nama;
   final String alamat;
@@ -36,15 +41,8 @@ class PenugasanScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final List<String> items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
-    // final controller = ref.watch(petugasController);
+    final formKey = GlobalKey<FormState>();
 
-    // final selectedDay = ref.watch(dayProvider);
-    // final selectedMonth = ref.watch(monthProvider);
-    // final selectedYear = ref.watch(yearProvider);
-    // const  String selectedDay = '';
-    // const String selectedMonth = '';
-    // const  String selectedYear = '';
     var safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(
       body: SingleChildScrollView(
@@ -58,86 +56,93 @@ class PenugasanScreen extends StatelessWidget {
             Container(
               padding: EdgeInsets.only(
                   top: safeAreaPadding.top + 42.h, left: 16.w, right: 16.w),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const HeaderWidget(
-                    title: 'Penugasan',
-                  ),
-                  SizedBox(height: 28.h),
-                  InvoiceWidget(
-                    invoice: noAduan,
-                  ),
-                  SizedBox(height: 20.h),
-                  DescriptionsWidget(
-                    status: status,
-                    nama: nama,
-                    nomor: noPelanggan ?? '',
-                    alamat: alamat,
-                    jenisAduan: jenisAduan,
-                    keterangan: keterangan,
-                  ),
-                  SizedBox(height: 20.h),
-                  Text(
-                    'Pilih Tanggal Target Penyelesaian',
-                    style: caption1.copyWith(color: vampireBlack),
-                    textAlign: TextAlign.start,
-                  ),
-                  SizedBox(height: 12.h),
-                  Container(
-                    decoration: BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 24,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
+              child: Form(
+                key: formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const HeaderWidget(
+                      title: 'Penugasan',
                     ),
-                    child: DropdownSearch<String>(
-                      dropdownBuilder: (context, selectedItem) {
-                        return Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/person_icon.svg',
-                              width: 24.w,
-                            ),
-                            SizedBox(
-                              width: 12.w,
-                            ),
-                            Expanded(
-                              child: Text(
-                                selectedItem ??
-                                    'Pilih Petugas yang akan ditugaskan',
-                                style: caption1.copyWith(
-                                    color: selectedItem != null
-                                        ? vampireBlack
-                                        : spanishGray),
+                    SizedBox(height: 28.h),
+                    InvoiceWidget(
+                      invoice: noAduan,
+                    ),
+                    SizedBox(height: 20.h),
+                    DescriptionsWidget(
+                      status: status,
+                      nama: nama,
+                      nomor: noPelanggan ?? '',
+                      alamat: alamat,
+                      jenisAduan: jenisAduan,
+                      keterangan: keterangan,
+                    ),
+                    SizedBox(height: 20.h),
+                    Text(
+                      'Pilih Petugas',
+                      style: caption1.copyWith(color: vampireBlack),
+                      textAlign: TextAlign.start,
+                    ),
+                    SizedBox(height: 12.h),
+                    Container(
+                      decoration: BoxDecoration(
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 24,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: DropdownSearch<Petugas>(
+                        validator: (value) {
+                          if (value == null) {
+                            return 'Petugas belum terisi';
+                          }
+                          return null;
+                        },
+                        itemAsString: (item) => item.nama,
+                        dropdownBuilder: (context, selectedItem) {
+                          return Row(
+                            children: [
+                              SvgPicture.asset(
+                                'assets/person_icon.svg',
+                                width: 24.w,
                               ),
-                            ),
-                          ],
-                        );
-                      },
-                      dropdownButtonProps: DropdownButtonProps(
-                        icon: SvgPicture.asset('assets/arrow_bottom_icon.svg'),
-                      ),
-
-                      popupProps: const PopupProps.bottomSheet(
-                        showSearchBox: true,
-                        bottomSheetProps: BottomSheetProps(
-                          backgroundColor: Colors.white,
-                          elevation: 10,
+                              SizedBox(
+                                width: 12.w,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  selectedItem?.nama ??
+                                      'Pilih Petugas yang akan ditugaskan',
+                                  style: caption1.copyWith(
+                                      color: selectedItem != null
+                                          ? vampireBlack
+                                          : spanishGray),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                        dropdownButtonProps: DropdownButtonProps(
+                          icon:
+                              SvgPicture.asset('assets/arrow_bottom_icon.svg'),
                         ),
-                        interceptCallBacks: false,
-                      
-                        // autoCloseSearchBox: true,
-
-                        // title: Text('Cari Petugas', style: heading2.copyWith(color: vampireBlack), textAlign: TextAlign.center,),
-                        // showSelectedItems: true,
-                        // disabledItemFn: (String s) => s.startsWith('I'),
-                      ),
-                      asyncItems: (text) {
-                        Future<List<String>> getPetugas() async {
+                        popupProps: PopupProps.bottomSheet(
+                          loadingBuilder: (context, searchEntry) =>
+                              const Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                          showSearchBox: true,
+                          bottomSheetProps: const BottomSheetProps(
+                            backgroundColor: Colors.white,
+                            elevation: 10,
+                          ),
+                          interceptCallBacks: false,
+                        ),
+                        asyncItems: (text) async {
+                          // Trigger loading event
                           final divisiId = context.read<AuthBloc>().state;
                           String id = '';
                           if (divisiId is AuthLoggedIn) {
@@ -146,82 +151,127 @@ class PenugasanScreen extends StatelessWidget {
                           context
                               .read<PetugasBloc>()
                               .add(GetPetugasEvent(divisiId: id));
-                          final data = context.read<PetugasBloc>().state;
-                          if (data is PetugasLoaded) {
-                            return data.petugas
-                                .map(
-                                  (e) => e.nama,
-                                )
-                                .toList();
-                          }
-                          return [''];
-                        }
 
-                        return getPetugas();
-                      },
-                      // items: const [
-                      //   "Brazil",
-                      //   "Italia",
-                      //   "Tunisia",
-                      //   'Canada',
-                      //   "Brazil",
-                      //   "Italia (Disabled)",
-                      //   "Tunisia",
-                      //   'Canada',
-                      // ],
-                      dropdownDecoratorProps: DropDownDecoratorProps(
-                        dropdownSearchDecoration: InputDecoration(
-                          filled: true,
-                          fillColor: white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                            borderSide: BorderSide.none,
+                          // Wait for the state to change and data to be loaded
+                          final state = await context
+                              .read<PetugasBloc>()
+                              .stream
+                              .firstWhere((state) => state is PetugasLoaded);
+
+                          // Return the data to the dropdown
+                          if (state is PetugasLoaded) {
+                            return state.petugas.map((e) => e).toList();
+                          }
+
+                          // Return an empty list or handle errors
+                          return [];
+                        },
+                        dropdownDecoratorProps: DropDownDecoratorProps(
+                          dropdownSearchDecoration: InputDecoration(
+                            filled: true,
+                            fillColor: white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                              borderSide: BorderSide.none,
+                            ),
                           ),
                         ),
+                        onChanged: (value) {
+                          context
+                              .read<PenugasanBloc>()
+                              .add(SelectPetugas(value!));
+                        },
                       ),
-                      onChanged: print,
                     ),
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Pilih Tanggal Target Penyelesaian',
-                    style: caption1.copyWith(color: vampireBlack),
-                    textAlign: TextAlign.start,
-                  ),
-                  SizedBox(height: 12.h),
-                  DateWidget(
-                    selectedDay: null,
-                    selectedMonth: null,
-                    selectedYear: null,
-                    onDayChanged: (String? newValue) {
-                      // ref.read(dayProvider.notifier).state = newValue!;
-                    },
-                    onMonthChanged: (String? newValue) {
-                      // ref.read(monthProvider.notifier).state = newValue!;
-                    },
-                    onYearChanged: (String? newValue) {
-                      // ref.read(yearProvider.notifier).state = newValue!;
-                    },
-                  ),
-                  // const Spacer(),
-                  SizedBox(
-                    height: 40.h,
-                  ),
-                  CustomButtonBottom(
-                    title: "Kirim",
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const BuktiPenugasan(),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                ],
+                    SizedBox(height: 16.h),
+                    Text(
+                      'Pilih Tanggal Target Penyelesaian',
+                      style: caption1.copyWith(color: vampireBlack),
+                      textAlign: TextAlign.start,
+                    ),
+                    SizedBox(height: 12.h),
+                    DateWidget(
+                      selectedDay: null,
+                      selectedMonth: null,
+                      selectedYear: null,
+                      onDayChanged: (String? newValue) {
+                        context
+                            .read<PenugasanBloc>()
+                            .add(SelectDate(day: newValue));
+                      },
+                      onMonthChanged: (String? newValue) {
+                        context
+                            .read<PenugasanBloc>()
+                            .add(SelectDate(month: newValue));
+                      },
+                      onYearChanged: (String? newValue) {
+                        context
+                            .read<PenugasanBloc>()
+                            .add(SelectDate(year: newValue));
+                      },
+                    ),
+                    SizedBox(
+                      height: 40.h,
+                    ),
+                    BlocConsumer<SendPenugasanBloc, SendPenugasanState>(
+                      listener: (context, state) {
+                        if (state is SendPenugasanError) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              backgroundColor: pastelRed,
+                              content: Text(state.message),
+                            ),
+                          );
+                        } else if (state is SendPenugasanSuccess) {
+                          // print(state.penugasan.nama);
+                          final stateAuth = context.read<AuthBloc>().state;
+                          if (stateAuth is AuthLoggedIn) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BuktiPenugasan(
+                                  ditugaskanOleh: stateAuth.auth.nama,
+                                  penugasan: state.penugasan,
+                                ),
+                              ),
+                            );
+                          }
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is SendPenugasanLoading) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                        return CustomButtonBottom(
+                          title: "Kirim",
+                          onPressed: () {
+                            final state = context.read<PenugasanBloc>().state;
+                            final stateAuth = context.read<AuthBloc>().state;
+                            if (state is PenugasanLoaded &&
+                                stateAuth is AuthLoggedIn) {
+                              if (!formKey.currentState!.validate()) return;
+                              DateTime tanggal = DateTime(
+                                  int.parse(state.selectedYear),
+                                  convert(state.selectedMonth)!,
+                                  int.parse(state.selectedDay));
+                              context.read<SendPenugasanBloc>().add(
+                                  ToggleSendPenugasanEvent(
+                                      idKepala: stateAuth.auth.id,
+                                      idPetugas: state.selectedPetugas!.id,
+                                      idPengaduan: int.parse(idAduan),
+                                      tglTarget: tanggal));
+                            }
+                          },
+                        );
+                      },
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                  ],
+                ),
               ),
             ),
           ],

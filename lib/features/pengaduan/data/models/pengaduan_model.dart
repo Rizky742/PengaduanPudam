@@ -1,5 +1,3 @@
-
-
 import 'package:pengaduan/features/pengaduan/domain/entitites/pengaduan.dart';
 
 class PengaduanModel extends Pengaduan {
@@ -9,41 +7,44 @@ class PengaduanModel extends Pengaduan {
       required super.noAduan,
       required super.noTelepon,
       required super.alamat,
-      required super.isProcessed,
       required super.idAduan,
-      required super.isComplete,
       required super.status,
       required super.jenisAduan,
       required super.keterangan});
 
   factory PengaduanModel.fromJson(Map<String, dynamic> json) {
+    final telp =
+        json['pengaduan']['no_telp'] == '-' ? '' : json['pengaduan']['no_telp'];
     final bool isProcessed = json['pengaduan']['is_processed'] ?? '';
     final bool isComplete = json['pengaduan']['is_complete'] ?? '';
-    final String status = _determineStatus(isProcessed, isComplete);
+    print(isComplete);
+    final bool petugasId =
+        json['pengaduan']['petugas_id'] != null ? true : false;
+    final String status = _determineStatus(isProcessed, isComplete, petugasId);
     return PengaduanModel(
-       idAduan: json['pengaduan']['id'] ?? '',
+        idAduan: json['pengaduan']['id'] ?? '',
         nama: json['pengaduan']['nama'] ?? '',
-        noPelanggan:
-            json['pengaduan']['pelanggan'] != null ? json['pengaduan']['pelanggan']['no_pelanggan'] : '',
-        noTelepon: json['pengaduan']['no_telp'] ?? '',
+        noPelanggan: json['pengaduan']['pelanggan'] != null
+            ? json['pengaduan']['pelanggan']['no_pelanggan']
+            : '',
+        noTelepon: telp,
         noAduan: json['pengaduan']['nomor'] ?? '',
         alamat: json['pengaduan']['alamat'] ?? '',
-        isProcessed: isProcessed,
-        isComplete: isComplete,
-        jenisAduan: json['pengaduan']['jenis_aduan']['nama'],
-        keterangan: json['pengaduan']['keterangan'],
+        jenisAduan: json['pengaduan']['jenis_aduan']['nama'] ?? '',
+        keterangan: json['pengaduan']['keterangan'] ?? '',
         status: status);
   }
 
-  static String _determineStatus(bool isProcessed, bool isComplete) {
-    if (!isProcessed) {
+  static String _determineStatus(
+      bool isProcessed, bool isComplete, bool petugasId) {
+    if (!petugasId && isProcessed && !isComplete) {
       return 'Belum Ditugaskan';
-    } else if (isProcessed) {
+    } else if (isProcessed && petugasId && !isComplete) {
       return 'Ditugaskan';
     } else if (!isComplete) {
-      return 'Belum Diselesaikan';
-    } else {
-      return 'Diselesaikan';
+      return "Belum Diselesaikan";
+    } else{
+      return "Diselesaikan";
     }
   }
 }

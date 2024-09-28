@@ -6,13 +6,32 @@ import 'package:pengaduan/theme.dart';
 class BuktiInformation extends StatelessWidget {
   const BuktiInformation({
     super.key,
+    required this.nomorPengaduan,
+    required this.nama,
+    required this.alamat,
+    required this.ditugaskanKepada,
+    required this.ditugaskanOleh,
+    required this.tanggal,
+    required this.targetPenyelesaian,
+    required this.jenisLaporan,
+    required this.keterangan,
+    required this.noPelanggan,
   });
+  final String nomorPengaduan;
+  final String nama;
+  final String alamat;
+  final String noPelanggan;
+  final String ditugaskanKepada;
+  final String ditugaskanOleh;
+  final String tanggal;
+  final String jenisLaporan;
+  final String keterangan;
+  final String targetPenyelesaian;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding:
-          EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
       decoration: BoxDecoration(
         color: white,
         borderRadius: BorderRadius.circular(16.r),
@@ -54,7 +73,7 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                '456456546474',
+                nomorPengaduan,
                 style: heading4.copyWith(color: vampireBlack),
               ),
             ],
@@ -70,7 +89,7 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                "05464564",
+                noPelanggan.isEmpty ? 'Non Pelanggan' : noPelanggan,
                 style: heading4.copyWith(color: vampireBlack),
               ),
             ],
@@ -86,8 +105,51 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                "Jefri Nichol",
+                nama,
                 style: heading4.copyWith(color: vampireBlack),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Jenis Laporan',
+                style: caption1.copyWith(color: graniteGray),
+              ),
+              Text(
+                jenisLaporan,
+                style: heading4.copyWith(color: vampireBlack),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          Row(
+            crossAxisAlignment:
+                CrossAxisAlignment.start, // Align text to the top
+            children: [
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Keterangan',
+                  style: caption1.copyWith(color: graniteGray),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  textAlign: TextAlign.right, // Use textAlign for alignment
+                  textDirection: TextDirection.rtl,
+                  keterangan.isNotEmpty ? keterangan : 'Tidak ada keterangan',
+                  softWrap: true,
+                  overflow: TextOverflow.visible,
+                  style: heading4.copyWith(color: vampireBlack),
+                ),
               ),
             ],
           ),
@@ -109,10 +171,11 @@ class BuktiInformation extends StatelessWidget {
                 width: 120.w,
               ),
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: Text(
+                  textAlign: TextAlign.right, // Use textAlign for alignment
                   textDirection: TextDirection.rtl,
-                  'Jl. Dimembe,  No. 2, Sulawesi Utara, Manado',
+                  alamat,
                   softWrap: true,
                   overflow: TextOverflow.visible,
                   style: heading4.copyWith(color: vampireBlack),
@@ -135,7 +198,7 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                "John F. Kenedy",
+                ditugaskanKepada,
                 style: heading4.copyWith(color: vampireBlack),
               ),
             ],
@@ -151,7 +214,7 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                "Joe Starry Biden",
+                ditugaskanOleh,
                 style: heading4.copyWith(color: vampireBlack),
               ),
             ],
@@ -167,7 +230,23 @@ class BuktiInformation extends StatelessWidget {
                 style: caption1.copyWith(color: graniteGray),
               ),
               Text(
-                "02 Januari 2024",
+                tanggal,
+                style: heading4.copyWith(color: vampireBlack),
+              ),
+            ],
+          ),
+          SizedBox(
+            height: 16.h,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Target Penyelesaian ',
+                style: caption1.copyWith(color: graniteGray),
+              ),
+              Text(
+                targetPenyelesaian,
                 style: heading4.copyWith(color: vampireBlack),
               ),
             ],

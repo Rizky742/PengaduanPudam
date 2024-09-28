@@ -1,19 +1,22 @@
+import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pengaduan/application/providers/bluetooth_provider.dart';
+import 'package:pengaduan/core/snackbar/snackbar.dart';
+import 'package:pengaduan/features/home/presentation/bloc/bluetooth_bloc.dart';
+import 'package:pengaduan/features/home/presentation/pages/home_page_screen.dart';
 import 'package:pengaduan/features/home/presentation/widgets/bluetooth_item_widget.dart';
 import 'package:pengaduan/features/pengaduan/presentation/widgets/header_widget.dart';
 import 'package:pengaduan/theme.dart';
 
-class BluetoothScreen extends ConsumerWidget {
+class BluetoothScreen extends StatelessWidget {
   const BluetoothScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     var safeAreaPadding = MediaQuery.of(context).padding;
-    final isBluetooth = ref.watch(bluetoothAcces);
-
+    print('woi');
+    context.read<BluetoothBloc>().add(StartScan());
     return Scaffold(
       body: SingleChildScrollView(
         child: Stack(
@@ -30,55 +33,91 @@ class BluetoothScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const HeaderWidget(
+                    jumpToPage: Homepage(),
                     title: 'Pengaturan Bluetooth',
                   ),
                   SizedBox(height: 28.h),
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: brightGray),
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: white),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                  Column(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(12.w),
+                        decoration: BoxDecoration(
+                            border: Border.all(width: 1, color: brightGray),
+                            borderRadius: BorderRadius.circular(8.r),
+                            color: white),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              'Bluetooth',
-                              style: body1.copyWith(color: vampireBlack),
-                            ),
-                            Text(
-                              'PDAM Bluetooth',
-                              style: caption1.copyWith(color: graniteGray),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Bluetooth',
+                                  style: body1.copyWith(color: vampireBlack),
+                                ),
+                                Text(
+                                  'PDAM Bluetooth',
+                                  style: caption1.copyWith(color: graniteGray),
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        Switch(
-                          value: isBluetooth,
-                          activeColor: blueCola,
-                          onChanged: (value) {
-                            ref.read(bluetoothAcces.notifier).state = value;
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(height: 16.h),
+                    ],
                   ),
-                  SizedBox(
-                    height: 16.h,
-                  ),
-                  const BluetoothItemWidget(
-                    title: "EPSON-HDC135",
-                    status: Status.connected,
-                  ),
-                  const BluetoothItemWidget(
-                    title: "EPSON-HDC135",
-                    status: Status.disconnected,
-                  ),
-                  const BluetoothItemWidget(
-                    title: "EPSON-HDC135",
-                    status: Status.disconnected,
+                  BlocBuilder<BluetoothBloc, BluetoothState>(
+                    buildWhen: (previous, current) =>
+                        current is BluetoothSetState,
+                    builder: (context, state) {
+                      if (state is BluetoothSetState) {
+                        final isConnect =
+                            state.connectedDevice != null ? true : false;
+                        final connectedDevice = state.connectedDevice;
+                        final List<BluetoothDevice> stateDevices;
+                        if (isConnect) {
+                          stateDevices = state.devices
+                              .where((element) =>
+                                  element.address != connectedDevice!.address)
+                              .toList();
+                        } else {
+                          stateDevices = state.devices;
+                        }
+                        if (state.devices.isNotEmpty) {
+                          return Column(
+                            children: stateDevices.map((device) {
+                              return BlocListener<BluetoothBloc, BluetoothState>(
+                                listener: (context, state) {
+                                  if(state is BluetoothError){
+                                    print(state.message);
+                                  }
+                                },
+                                child: GestureDetector(
+                                  onTap: () {
+                                    context
+                                        .read<BluetoothBloc>()
+                                        .add(ConnectDevice(device));
+                                  },
+                                  child: BluetoothItemWidget(
+                                      title: device.name!,
+                                      status: Status.connected),
+                                ),
+                              );
+                            }).toList(),
+                          );
+                        } else {
+                          return const Center(
+                            child: Text('No Data'),
+                          );
+                        }
+                      } else if (state is BluetoothError) {
+                        return Center(
+                          child: Text(state.message),
+                        );
+                      }
+                      return Container();
+                    },
                   ),
                 ],
               ),

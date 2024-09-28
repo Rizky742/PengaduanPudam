@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pengaduan/core/dialog/setUpUrl.dart';
 import 'package:pengaduan/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:pengaduan/features/home/presentation/widgets/profile_menu_item_widget.dart';
 import 'package:pengaduan/features/pengaduan/presentation/widgets/header_widget.dart';
 import 'package:pengaduan/theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilScreen extends StatelessWidget {
   const ProfilScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController urlController = TextEditingController();
+
     var safeAreaPadding = MediaQuery.of(context).padding;
     return Scaffold(
       body: Stack(
@@ -65,6 +69,16 @@ class ProfilScreen extends StatelessWidget {
                   height: 40.h,
                 ),
                 ProfileMenuItemWidget(
+                  icon: 'assets/set_up_url_icon.svg',
+                  title: 'Setting URL',
+                  function: () {
+                    setUpDialog(context, urlController);
+                  },
+                ),
+                SizedBox(
+                  height: 12.h,
+                ),
+                ProfileMenuItemWidget(
                   icon: 'assets/password_icon.svg',
                   title: 'Ganti Kata Sandi',
                   function: () {},
@@ -75,7 +89,12 @@ class ProfilScreen extends StatelessWidget {
                 ProfileMenuItemWidget(
                   icon: 'assets/logout_icon.svg',
                   title: 'Keluar',
-                  function: () {
+                  function: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    prefs.remove('auth');
+                    prefs.remove('profile');
+                    // prefs.clear();
                     Navigator.pushReplacementNamed(context, '/login');
                   },
                 ),
@@ -86,4 +105,6 @@ class ProfilScreen extends StatelessWidget {
       ),
     );
   }
+
 }
+

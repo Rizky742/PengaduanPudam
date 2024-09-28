@@ -1,4 +1,5 @@
-
+import 'package:pengaduan/core/error/failure.dart';
+import 'package:pengaduan/features/pengaduan/data/datasources/pengaduan_remote_datasource.dart';
 
 class Profile {
   final String nama;
@@ -8,34 +9,15 @@ class Profile {
 }
 
 void main() async {
-  // final GetPengaduan getPengaduan =
-  //     GetPengaduan(PengaduanRepositoryImpl(PengaduanRemoteDatasourceImpl()));
-  // var response = await getPengaduan.call(month: '07', year: '2024');
-
-  // response.fold((failure) {
-  //   print(failure.message);
-  // }, (pengaduan) {
-  //   pengaduan.map((e) =>  print(e.noAduan)).toList();
-  // });
-
-  final List<Profile> test = [
-    Profile('juno', 'Probolinggo'),
-    Profile('ahmad', 'malang')
-  ];
-  final testhalo = test
-      .where(
-        (element) => element.alamat.toLowerCase().contains('p'),
-      )
-      .toList();
-  testhalo.map((e) => print(e.nama)).toList();
-  // try {
-  //   var response = await pengaduanRemoteDatasourceImpl.getPengaduan(month: '07', year: '2024');
-  //   response.map((e) => print(e.noPelanggan),).toList();
-  // } catch (e) {
-  //   if (e is ServerFailure) {
-  //     print('Server error: ${e.message}');
-  //   } else {
-  //     print('Unexpected error: $e');
-  //   }
-  // }
+  try {
+    final PengaduanRemoteDatasource remoteDatasource =
+        PengaduanRemoteDatasourceImpl();
+    var response = await remoteDatasource.getJenisPenyelesaian();
+    print('sdfsdf');
+    print(response.toList());
+  } catch (e) {
+    if (e is ServerFailure) {
+      print(ServerFailure(e.message));
+    }
+  }
 }

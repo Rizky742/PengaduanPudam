@@ -11,9 +11,11 @@ class SearchFliterWidget extends StatelessWidget {
   SearchFliterWidget({
     super.key,
     required this.controller,
+    required this.role,
   });
 
   TextEditingController controller;
+  String role;
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +42,7 @@ class SearchFliterWidget extends StatelessWidget {
               },
               style: body2,
               decoration: InputDecoration(
-                hintText: 'Cari Nama / Nomor Pelanggan',
+                hintText: 'Cari Nama / Nomor Pelanggan / No Aduan',
                 hintStyle: caption1,
                 border: InputBorder.none,
               ),
@@ -67,7 +69,10 @@ class SearchFliterWidget extends StatelessWidget {
               'assets/filter_icon.svg',
             ),
             onSelected: (String value) {
-              context.read<PengaduanBloc>().add(GetFilterPengaduanEventFilter(value));
+              print(value);
+              context
+                  .read<PengaduanBloc>()
+                  .add(GetFilterPengaduanEventFilter(value));
             },
             color: white,
             shadowColor: Colors.black,
@@ -77,28 +82,45 @@ class SearchFliterWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8.r)),
             popUpAnimationStyle: AnimationStyle(curve: Curves.linearToEaseOut),
             itemBuilder: (BuildContext context) {
-              return <PopupMenuEntry<String>>[
+              List<PopupMenuEntry<String>> menu = [
                 const PopupMenuItem<String>(
                   value: '',
                   child: Text('Semua'),
                 ),
-                const PopupMenuItem<String>(
-                  value: 'Belum Ditugaskan',
-                  child: Text('Belum Ditugaskan'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Ditugaskan',
-                  child: Text('Ditugaskan'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Belum Diselesaikan',
-                  child: Text('Belum Diselesaikan'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'Diselesaikan',
-                  child: Text('Diselesaikan'),
-                ),
               ];
+              if (role.toLowerCase() == 'kepala') {
+                menu.addAll([
+                  const PopupMenuItem<String>(
+                    value: 'Belum Ditugaskan',
+                    child: Text('Belum Ditugaskan'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Ditugaskan',
+                    child: Text('Ditugaskan'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Belum Diselesaikan',
+                    child: Text('Belum Diselesaikan'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Diselesaikan',
+                    child: Text('Diselesaikan'),
+                  ),
+                ]);
+              } else {
+                menu.addAll([
+                  const PopupMenuItem<String>(
+                    value: 'Belum Diselesaikan',
+                    child: Text('Belum Diselesaikan'),
+                  ),
+                  const PopupMenuItem<String>(
+                    value: 'Diselesaikan',
+                    child: Text('Diselesaikan'),
+                  ),
+                ]);
+              }
+
+              return menu;
             },
           ),
         ),

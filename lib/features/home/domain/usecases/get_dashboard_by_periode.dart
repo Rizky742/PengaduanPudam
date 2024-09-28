@@ -11,8 +11,11 @@ class GetDashboardByPeriode {
   Future<Either<Failure, Dashboard>> call({
     required String month,
     required String year,
+    required int divisiId,
+    required String petugasId
+
   }) async {
     return await dashboardRepository.getDashboardByPeriode(
-        month: month, year: year);
+        month: month, year: year, divisiId: divisiId, petugasId: petugasId);
   }
 }

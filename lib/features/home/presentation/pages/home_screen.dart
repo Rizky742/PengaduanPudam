@@ -18,16 +18,32 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // print('home screen');
     var safeAreaPadding = MediaQuery.of(context).padding;
     final periodeState = context.read<PeriodeBloc>().state;
-    if (periodeState is PeriodeSetted) {
-      context.read<DashboardBloc>().add(GetDashboardEvent(
-          '${periodeState.periode.month}', '${periodeState.periode.year}'));
-    } else {
-      DateTime now = DateTime.now();
-      final int year = now.year;
-      final int month = now.month;
-      context.read<DashboardBloc>().add(GetDashboardEvent('$month', '$year'));
+    final divisi = context.read<AuthBloc>().state;
+    String role = '';
+    String petugasId = '';
+    String divisiId = '';
+    if (divisi is AuthLoggedIn) {
+      role = divisi.auth.role;
+      if (divisi.auth.role.toLowerCase() != 'kepala') {
+        petugasId = divisi.auth.id.toString();
+      }
+      divisiId = divisi.auth.divisiId.toString();
+      if (periodeState is PeriodeSetted) {
+        context.read<DashboardBloc>().add(GetDashboardEvent(
+            '${periodeState.periode.month}',
+            '${periodeState.periode.year}',
+            divisi.auth.divisiId,
+            petugasId));
+      } else {
+        DateTime now = DateTime.now();
+        final int year = now.year;
+        final int month = now.month;
+        context.read<DashboardBloc>().add(GetDashboardEvent(
+            '$month', '$year', divisi.auth.divisiId, petugasId));
+      }
     }
 
     return Scaffold(
@@ -77,7 +93,7 @@ class HomeScreen extends StatelessWidget {
                     height: 24.h,
                   ),
                   Container(
-                    padding: EdgeInsets.all(12.w),
+                    padding: EdgeInsets.all(12.h),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(12.r)),
                       color: Colors.white,
@@ -110,7 +126,9 @@ class HomeScreen extends StatelessWidget {
                           (value) {
                             context.read<DashboardBloc>().add(GetDashboardEvent(
                                 pilihTanggal.month.toString(),
-                                pilihTanggal.year.toString()));
+                                pilihTanggal.year.toString(),
+                                int.parse(divisiId),
+                                petugasId));
                             context
                                 .read<PeriodeBloc>()
                                 .add(PeriodeSet(pilihTanggal));
@@ -124,14 +142,15 @@ class HomeScreen extends StatelessWidget {
                             periode =
                                 DateFormat('MMMM yyyy').format(state.periode);
                           }
+                         String currentMonth = DateFormat('MMMM yyyy').format(DateTime.now());
                           return Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
                                 periode.isEmpty
-                                    ? 'Periode Pemeliharaan'
+                                    ? currentMonth
                                     : periode,
-                                style: periode.isEmpty ?  caption1.copyWith(color: spanishGray) : caption1.copyWith(color: vampireBlack),
+                                style: caption1.copyWith(color: vampireBlack),
                               ),
                               SvgPicture.asset('assets/arrow_bottom_icon.svg'),
                             ],
@@ -145,23 +164,25 @@ class HomeScreen extends StatelessWidget {
                   ),
                   BlocBuilder<DashboardBloc, DashboardState>(
                     builder: (context, state) {
-                      if (state is DashboardLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (state is DashboardLoaded) {
+                      if(state is DashboardLoading) {
+                        return const Center(child: CircularProgressIndicator(),);
+                      }
+                    else if (state is DashboardLoaded) {
                         return Dashboard(
-                          belumDitugasi: state.dashboard.belumDitugaskan,
-                          sudahDitugasi: state.dashboard.ditugaskan,
-                          belumDiselesaikan: state.dashboard.belumDiselesaikan,
-                          sudahDiselesaikan: state.dashboard.diselesaikan,
+                          role: role,
+                          belumDitugasi:
+                              state.dashboard.belumDitugaskan.toString(),
+                          sudahDitugasi: state.dashboard.ditugaskan.toString(),
+                          belumDiselesaikan:
+                              state.dashboard.belumDiselesaikan.toString(),
+                          sudahDiselesaikan:
+                              state.dashboard.diselesaikan.toString(),
                         );
-                      }  else if (state is DashboardError) {
+                      } else if (state is DashboardError) {
                         return Center(
                           child: Text('Error: ${state.message}'),
                         );
-                      }
-                       else {
+                      } else {
                         return Container();
                       }
                     },
@@ -169,30 +190,35 @@ class HomeScreen extends StatelessWidget {
                   SizedBox(
                     height: 24.h,
                   ),
-                  Container(
-                    padding: EdgeInsets.all(12.w),
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 1, color: brightGray),
-                        borderRadius: BorderRadius.circular(8.r),
-                        color: white),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/document_icon.svg',
-                          width: 24.w,
-                        ),
-                        SizedBox(
-                          width: 12.w,
-                        ),
-                        Text(
-                          'Lihat laporan Rekapitulasi Pengaduan PDAM',
-                          style: caption1.copyWith(color: vampireBlack),
-                        ),
-                        const Spacer(),
-                        SvgPicture.asset('assets/arrow_right_icon.svg')
-                      ],
-                    ),
-                  ),
+                  // GestureDetector(
+                  //   onTap: () {
+                  //     context.read<BluetoothBloc>().add(PrintReceipt());
+                  //   },
+                  //   child: Container(
+                  //     padding: EdgeInsets.all(12.w),
+                  //     decoration: BoxDecoration(
+                  //         border: Border.all(width: 1, color: brightGray),
+                  //         borderRadius: BorderRadius.circular(8.r),
+                  //         color: white),
+                  //     child: Row(
+                  //       children: [
+                  //         SvgPicture.asset(
+                  //           'assets/document_icon.svg',
+                  //           width: 24.w,
+                  //         ),
+                  //         SizedBox(
+                  //           width: 12.w,
+                  //         ),
+                  //         Text(
+                  //           'Lihat laporan Rekapitulasi Pengaduan',
+                  //           style: caption1.copyWith(color: vampireBlack),
+                  //         ),
+                  //         const Spacer(),
+                  //         SvgPicture.asset('assets/arrow_right_icon.svg')
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),

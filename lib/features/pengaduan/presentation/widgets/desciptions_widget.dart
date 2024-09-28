@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pengaduan/theme.dart';
 
-
 class DescriptionsWidget extends StatelessWidget {
   const DescriptionsWidget({
     super.key,
@@ -76,15 +75,23 @@ class DescriptionsWidget extends StatelessWidget {
       child: Column(
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Nomor Pelanggan',
-                style: caption1.copyWith(color: graniteGray),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Nomor Pelanggan',
+                  style: caption1.copyWith(color: graniteGray),
+                ),
               ),
-              Text(
-                nomor.isNotEmpty ? nomor : 'Non Pelanggan' ,
-                style: heading4.copyWith(color: vampireBlack),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  textAlign: TextAlign.right,
+                  nomor.isNotEmpty ? nomor : 'Non Pelanggan',
+                  style: heading4.copyWith(color: vampireBlack),
+                ),
               ),
             ],
           ),
@@ -92,15 +99,23 @@ class DescriptionsWidget extends StatelessWidget {
             height: 16.h,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Nama Pelanggan',
-                style: caption1.copyWith(color: graniteGray),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Nama Pelanggan',
+                  style: caption1.copyWith(color: graniteGray),
+                ),
               ),
-              Text(
-                nama,
-                style: heading4.copyWith(color: vampireBlack),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  textAlign: TextAlign.right,
+                  nama,
+                  style: heading4.copyWith(color: vampireBlack),
+                ),
               ),
             ],
           ),
@@ -118,11 +133,8 @@ class DescriptionsWidget extends StatelessWidget {
                   style: caption1.copyWith(color: graniteGray),
                 ),
               ),
-              SizedBox(
-                width: 120.w,
-              ),
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: Text(
                   textDirection: TextDirection.rtl,
                   alamat,
@@ -137,15 +149,23 @@ class DescriptionsWidget extends StatelessWidget {
             height: 16.h,
           ),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Jenis Aduan',
-                style: caption1.copyWith(color: graniteGray),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  'Jenis Aduan',
+                  style: caption1.copyWith(color: graniteGray),
+                ),
               ),
-              Text(
-                jenisAduan,
-                style: heading4.copyWith(color: vampireBlack),
+              Expanded(
+                flex: 1,
+                child: Text(
+                  textAlign: TextAlign.right,
+                  jenisAduan,
+                  style: heading4.copyWith(color: vampireBlack),
+                ),
               ),
             ],
           ),
@@ -163,11 +183,8 @@ class DescriptionsWidget extends StatelessWidget {
                   style: caption1.copyWith(color: graniteGray),
                 ),
               ),
-              SizedBox(
-                width: 100.w,
-              ),
               Expanded(
-                flex: 2,
+                flex: 1,
                 child: Text(
                   textDirection: TextDirection.rtl,
                   keterangan,

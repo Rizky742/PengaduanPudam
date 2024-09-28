@@ -17,7 +17,7 @@ class DashboardItem extends StatelessWidget {
     required this.type,
   });
 
-  final int amount;
+  final String amount;
   final Type type;
 
   @override
@@ -53,7 +53,7 @@ class DashboardItem extends StatelessWidget {
         break;
     }
     return Container(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       width: 158.w,
       decoration: BoxDecoration(
           border: Border.all(width: 2, color: color),
@@ -68,9 +68,9 @@ class DashboardItem extends StatelessWidget {
             width: 32.w,
           ),
           Text(
-            amount.toString(),
+           amount ?? "0",
             style: heading1.copyWith(color: color),
-            overflow: TextOverflow.ellipsis,
+            // overflow: TextOverflow.ellipsis,
           ),
           Text(
             status,

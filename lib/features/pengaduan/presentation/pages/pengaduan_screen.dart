@@ -12,23 +12,30 @@ import 'package:pengaduan/theme.dart';
 class PengaduanScreen extends StatelessWidget {
   const PengaduanScreen({super.key});
 
+  static TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
-    TextEditingController search = TextEditingController();
+    // final search = context.read<TextControllerCubit>().searchController;
     String role = '';
     String id = '';
-    // String filter = '';
+    String idPetugas = '';
+    String nama = '';
     var safeAreaPadding = MediaQuery.of(context).padding;
     final periode = context.read<PeriodeBloc>().state;
     final data = context.read<AuthBloc>().state;
+    // final pengaduan = context.read<PengaduanBloc>().state;
     if (data is AuthLoggedIn) {
       role = data.auth.role;
+      idPetugas = data.auth.id.toString();
+      nama = data.auth.nama;
       if (role.toLowerCase() == 'kepala') {
         id = data.auth.divisiId.toString();
       } else {
         id = data.auth.id.toString();
       }
     }
+    // if (pengaduan is PengaduanLoaded) {
+    // }
     if (periode is PeriodeSetted) {
       context.read<PengaduanBloc>().add(GetPengaduanEvent(
           month: periode.periode.month.toString(),
@@ -42,6 +49,22 @@ class PengaduanScreen extends StatelessWidget {
           id: id,
           role: role));
     }
+    Future<void> refresh() async {
+      if (periode is PeriodeSetted) {
+        context.read<PengaduanBloc>().add(GetPengaduanEvent(
+            month: periode.periode.month.toString(),
+            year: periode.periode.year.toString(),
+            id: id,
+            role: role));
+      } else {
+        context.read<PengaduanBloc>().add(GetPengaduanEvent(
+            month: DateTime.now().month.toString(),
+            year: DateTime.now().year.toString(),
+            id: id,
+            role: role));
+      }
+    }
+
     return Scaffold(
       body: Stack(
         children: [
@@ -60,7 +83,11 @@ class PengaduanScreen extends StatelessWidget {
                   jumpToHome: true,
                 ),
                 SizedBox(height: 32.h), // Add spacing between rows
-                SearchFliterWidget(controller: search),
+                SearchFliterWidget(
+                  controller: search,
+                  role: role,
+                ),
+                SizedBox(height: 20.h),
                 Expanded(
                   child: BlocBuilder<PengaduanBloc, PengaduanState>(
                     builder: (context, state) {
@@ -80,38 +107,48 @@ class PengaduanScreen extends StatelessWidget {
                                 .contains(search.text.toLowerCase());
                             final status = element.status.toLowerCase() ==
                                 filter.toLowerCase();
+                            final noAduan = element.noAduan
+                                .toLowerCase()
+                                .contains(search.text.toLowerCase());
                             if (search.text.isNotEmpty && filter.isNotEmpty) {
-                              return noPelanggan && status || name && status;
+                              return noPelanggan && status ||
+                                  name && status ||
+                                  noAduan && status;
                             } else if (search.text.isEmpty &&
                                 filter.isNotEmpty) {
                               return status;
                             } else {
-                              return noPelanggan || name;
+                              return noPelanggan || name || noAduan;
                             }
                           },
                         ).toList();
 
                         if (filtered.isNotEmpty) {
-                          return ListView.builder(
-                            itemCount: filtered.length,
-                            shrinkWrap: false, // Allow ListView to expand
-                            padding: EdgeInsets.symmetric(vertical: 20.h),
-                            physics:
-                                const AlwaysScrollableScrollPhysics(), // Ensure scrolling
-                            itemBuilder: (context, index) {
-                              final pengaduan = filtered[index];
-                              return PengaduanItem(
-                                  idAduan: pengaduan.idAduan.toString(),
-                                  role: role,
-                                  keterangan: pengaduan.keterangan,
-                                  jenisAduan: pengaduan.jenisAduan,
-                                  noAduan: pengaduan.noAduan,
-                                  noPelanggan: pengaduan.noPelanggan,
-                                  nama: pengaduan.nama,
-                                  alamat: pengaduan.alamat,
-                                  status: pengaduan.status,
-                                  phoneNumber: pengaduan.noTelepon);
-                            },
+                          return RefreshIndicator(
+                            onRefresh: refresh,
+                            child: ListView.builder(
+                              itemCount: filtered.length,
+                              shrinkWrap: false, // Allow ListView to expand
+                              padding: EdgeInsets.zero,
+                              physics:
+                                  const AlwaysScrollableScrollPhysics(), // Ensure scrolling
+                              itemBuilder: (context, index) {
+                                final pengaduan = filtered[index];
+                                return PengaduanItem(
+                                    idPetugas: idPetugas,
+                                    namaPetugas: nama,
+                                    idAduan: pengaduan.idAduan.toString(),
+                                    role: role,
+                                    keterangan: pengaduan.keterangan,
+                                    jenisAduan: pengaduan.jenisAduan,
+                                    noAduan: pengaduan.noAduan,
+                                    noPelanggan: pengaduan.noPelanggan,
+                                    nama: pengaduan.nama,
+                                    alamat: pengaduan.alamat,
+                                    status: pengaduan.status,
+                                    phoneNumber: pengaduan.noTelepon);
+                              },
+                            ),
                           );
                         } else {
                           return const Center(
@@ -119,8 +156,19 @@ class PengaduanScreen extends StatelessWidget {
                           );
                         }
                       } else if (state is PengaduanError) {
-                        return Center(
-                          child: Text('Error: ${state.message}'),
+                        return RefreshIndicator(
+                          onRefresh:
+                              refresh, // Menjalankan fungsi refresh ketika pull-to-refresh
+                          child: ListView(
+                            physics:
+                                const AlwaysScrollableScrollPhysics(), // Memastikan ListView bisa di-scroll meskipun tidak ada data
+                            children: [
+                              Center(
+                                child: Text(
+                                    'Error: ${state.message}'), // Menampilkan pesan error
+                              ),
+                            ],
+                          ),
                         );
                       }
                       return Container();

@@ -1,3 +1,4 @@
+import 'package:bluetooth_print/bluetooth_print.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,8 +14,7 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final navigationBloc = context.read<NavigationBloc>();
-    // final pageController = navigationBloc.pageController;
+  final BluetoothPrint _bluetoothPrint = BluetoothPrint.instance;
     return BlocProvider(
       create: (context) => NavigationBloc(PageController()),
       child: BlocBuilder<NavigationBloc, NavigationState>(
@@ -69,8 +69,6 @@ class Homepage extends StatelessWidget {
               currentIndex: selectedIndex,
               selectedItemColor: blueCola,
               onTap: (index) {
-                // ref.read(selectedIndexProvider.notifier).state = index;
-                // pageController.jumpToPage(index);
                 context.read<NavigationBloc>().add(ChangePage(index));
               },
             ),
