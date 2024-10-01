@@ -14,7 +14,7 @@ class Homepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final BluetoothPrint _bluetoothPrint = BluetoothPrint.instance;
+  final BluetoothPrint bluetoothPrint = BluetoothPrint.instance;
     return BlocProvider(
       create: (context) => NavigationBloc(PageController()),
       child: BlocBuilder<NavigationBloc, NavigationState>(

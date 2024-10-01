@@ -34,7 +34,7 @@ class SendDataPenyelesaianBloc
 
     on<ToggleGetDataPenyelesaianById>(
       (event, emit) async {
-        print('testtt');
+        emit(SendDataPenyelesaianLoading());
         final getData = await getPenyelesaianById.call(id: event.id);
         getData.fold(
           (l) => emit(SendDataPenyelesaianError(l.message)),

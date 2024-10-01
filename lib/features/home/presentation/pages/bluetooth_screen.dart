@@ -2,7 +2,6 @@ import 'package:bluetooth_print/bluetooth_print_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:pengaduan/core/snackbar/snackbar.dart';
 import 'package:pengaduan/features/home/presentation/bloc/bluetooth_bloc.dart';
 import 'package:pengaduan/features/home/presentation/pages/home_page_screen.dart';
 import 'package:pengaduan/features/home/presentation/widgets/bluetooth_item_widget.dart';

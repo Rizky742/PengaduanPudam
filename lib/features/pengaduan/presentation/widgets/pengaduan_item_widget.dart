@@ -334,18 +334,7 @@ class PengaduanItem extends StatelessWidget {
                             BlocListener<SendDataPenyelesaianBloc,
                                 SendDataPenyelesaianState>(
                               listener: (context, state) {
-                                if (state is SendDataPenyelesaianLoading) {
-                                  //  showDialog(
-                                  //   context: context,
-                                  //   builder: (context) {
-                                  //     return Container(
-                                  //       child: Text("Loading"),
-                                  //     );
-                                  //   },
-                                  // );
-                                  print('Loaddingg');
-                                }
-                                else if (state is SendDataPenyelesaianSuccess) {
+                               if (state is SendDataPenyelesaianSuccess) {
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

@@ -68,7 +68,7 @@ class DashboardItem extends StatelessWidget {
             width: 32.w,
           ),
           Text(
-           amount ?? "0",
+           amount,
             style: heading1.copyWith(color: color),
             // overflow: TextOverflow.ellipsis,
           ),

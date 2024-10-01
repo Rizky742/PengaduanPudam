@@ -12,10 +12,10 @@ import 'package:pengaduan/theme.dart';
 class PengaduanScreen extends StatelessWidget {
   const PengaduanScreen({super.key});
 
-  static TextEditingController search = TextEditingController();
   @override
   Widget build(BuildContext context) {
     // final search = context.read<TextControllerCubit>().searchController;
+    TextEditingController search = TextEditingController();
     String role = '';
     String id = '';
     String idPetugas = '';

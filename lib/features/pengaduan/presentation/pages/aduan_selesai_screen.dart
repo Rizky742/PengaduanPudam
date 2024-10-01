@@ -61,37 +61,34 @@ class _AduanSelesaiScreenState extends State<AduanSelesaiScreen> {
     }
   }
 
+  Future<void> _downloadScreenshot() async {
+    // Capture screenshot
+    final Uint8List? imageBytes = await screenshotController.capture();
 
-    Future<void> _downloadScreenshot() async {
-      // Capture screenshot
-      final Uint8List? imageBytes = await screenshotController.capture();
+    if (imageBytes != null) {
+      // Save the screenshot to the gallery
+      final result = await ImageGallerySaver.saveImage(
+        imageBytes,
+        quality: 100,
+        name: 'bukti_penyelesaian', // Nama file
+      );
 
-      if (imageBytes != null) {
-        // Save the screenshot to the gallery
-        final result = await ImageGallerySaver.saveImage(
-          imageBytes,
-          quality: 100,
-          name: 'bukti_penyelesaian', // Nama file
+      // Check if saving was successful
+      if (result['isSuccess'] == true) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Screenshot berhasil disimpan ke galeri')),
         );
-
-        // Check if saving was successful
-        if (result['isSuccess'] == true) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Screenshot berhasil disimpan ke galeri')),
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-                content: Text('Gagal menyimpan screenshot ke galeri')),
-          );
-        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Gagal mengambil screenshot')),
+          const SnackBar(content: Text('Gagal menyimpan screenshot ke galeri')),
         );
       }
-  
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Gagal mengambil screenshot')),
+      );
+    }
   }
 
   @override
@@ -112,272 +109,306 @@ class _AduanSelesaiScreenState extends State<AduanSelesaiScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const HeaderWidget(
-                    title: 'Aduan Selesai',
-                    rightIcon: true,
-                    jumpToPage: PengaduanScreen(),
-                    // jumpToPage: 0,
-                  ),
-                  SizedBox(height: 28.h),
-                  ContainerBigWidget(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          'assets/success_with_background_icon.svg',
-                          width: 32.w,
-                        ),
-                        SizedBox(
-                          height: 12.h,
-                        ),
-                        Text(
-                          'Bukti Peyelesaian',
-                          style: body1.copyWith(color: vampireBlack),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16.h,
-                  ),
+                   const HeaderWidget(
+                        title: 'Aduan Selesai',
+                        rightIcon: true,
+                        jumpToPage: PengaduanScreen(),
+                        // jumpToPage: 0,
+                      ),
+                      SizedBox(height: 28.h),
                   Screenshot(
                     controller: screenshotController,
-                    child: ContainerBigWidget(
-                      padding: EdgeInsets.symmetric(
-                          vertical: 12.h, horizontal: 16.w),
-                      child: Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ContainerBigWidget(
+                          padding: EdgeInsets.symmetric(vertical: 12.h),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'Nomor Aduan',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.nomorAduan,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Nomor Pelanggan',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.noPelanggan.isNotEmpty
-                                    ? widget.noPelanggan
-                                    : 'Non Pelanggan',
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Nama Pelanggan',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.nama,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Align text to the top
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  'Alamat',
-                                  style: caption1.copyWith(color: graniteGray),
-                                ),
+                              SvgPicture.asset(
+                                'assets/success_with_background_icon.svg',
+                                width: 32.w,
                               ),
                               SizedBox(
-                                width: 120.w,
+                                height: 12.h,
                               ),
-                              Expanded(
-                                flex: 2,
-                                child: Text(
-                                  textDirection: TextDirection.rtl,
-                                  widget.alamat,
-                                  softWrap: true,
-                                  overflow: TextOverflow.visible,
-                                  style: heading4.copyWith(color: vampireBlack),
-                                ),
+                              Text(
+                                'Bukti Peyelesaian',
+                                style: body1.copyWith(color: vampireBlack),
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          const Divider(),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                        SizedBox(
+                          height: 16.h,
+                        ),
+                        ContainerBigWidget(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 12.h, horizontal: 16.w),
+                          child: Column(
                             children: [
-                              Text(
-                                'Ditugaskan Kepada',
-                                style: caption1.copyWith(color: graniteGray),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Nomor Aduan',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.nomorAduan,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                widget.ditugaskanKepada,
-                                style: heading4.copyWith(color: vampireBlack),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Nomor Pelanggan',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.noPelanggan.isNotEmpty
+                                        ? widget.noPelanggan
+                                        : 'Non Pelanggan',
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Nama Pelanggan',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.nama,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .start, // Align text to the top
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      'Alamat',
+                                      style:
+                                          caption1.copyWith(color: graniteGray),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 120.w,
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Text(
+                                      textDirection: TextDirection.rtl,
+                                      widget.alamat,
+                                      softWrap: true,
+                                      overflow: TextOverflow.visible,
+                                      style: heading4.copyWith(
+                                          color: vampireBlack),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              const Divider(),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Ditugaskan Kepada',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.ditugaskanKepada,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Ditugaskan Oleh',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.ditugaskanOleh,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Tanggal Penugasan',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.tanggalPenugasan,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              const Divider(),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Penyelesaian',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.jenisPenyelesaian,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Tanggal Penyelesaian',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Text(
+                                    widget.tanggalPenyelesaian,
+                                    style:
+                                        heading4.copyWith(color: vampireBlack),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Status',
+                                    style:
+                                        caption1.copyWith(color: graniteGray),
+                                  ),
+                                  Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w, vertical: 4.w),
+                                    decoration: BoxDecoration(
+                                      color: bubbles,
+                                      border: Border.all(
+                                          width: 0.5.w, color: caribbeanGreen),
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                    child: Text(
+                                      "Diselesaikan",
+                                      style: caption2.copyWith(
+                                          color: caribbeanGreen),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 16.h,
+                              ),
+                              Row(
+                                crossAxisAlignment: CrossAxisAlignment
+                                    .start, // Align text to the top
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      'Bukti Penyelesaian',
+                                      style:
+                                          caption1.copyWith(color: graniteGray),
+                                    ),
+                                  ),
+                                  // Expanded(
+                                  //   flex: 1,
+                                  //     child:
+                                  //         Image.network(widget.buktiPenyelesaian)),
+                                  // Expanded(
+                                  //   flex: 1,
+                                  //   child: Text(
+                                  //     textDirection: TextDirection.rtl,
+                                  //     widget.buktiPenyelesaian,
+                                  //     softWrap: true,
+                                  //     overflow: TextOverflow.visible,
+                                  //     style: heading4.copyWith(color: vampireBlack),
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 8.h,
+                              ),
+                              Image.network(
+                                widget.buktiPenyelesaian,
+                                fit: BoxFit.cover,
                               ),
                             ],
                           ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Ditugaskan Oleh',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.ditugaskanOleh,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Tanggal Penugasan',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.tanggalPenugasan,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          const Divider(),
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Penyelesaian',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.jenisPenyelesaian,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Tanggal Penyelesaian',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Text(
-                                widget.tanggalPenyelesaian,
-                                style: heading4.copyWith(color: vampireBlack),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Status',
-                                style: caption1.copyWith(color: graniteGray),
-                              ),
-                              Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w, vertical: 4.w),
-                                decoration: BoxDecoration(
-                                  color: bubbles,
-                                  border: Border.all(
-                                      width: 0.5.w, color: caribbeanGreen),
-                                  borderRadius: BorderRadius.circular(100),
-                                ),
-                                child: Text(
-                                  "Diselesaikan",
-                                  style:
-                                      caption2.copyWith(color: caribbeanGreen),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 16.h,
-                          ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment
-                                .start, // Align text to the top
-                            children: [
-                              Expanded(
-                                flex: 1,
-                                child: Text(
-                                  'Bukti Penyelesaian',
-                                  style: caption1.copyWith(color: graniteGray),
-                                ),
-                              ),
-                              // Expanded(
-                              //   flex: 1,
-                              //     child:
-                              //         Image.network(widget.buktiPenyelesaian)),
-                              // Expanded(
-                              //   flex: 1,
-                              //   child: Text(
-                              //     textDirection: TextDirection.rtl,
-                              //     widget.buktiPenyelesaian,
-                              //     softWrap: true,
-                              //     overflow: TextOverflow.visible,
-                              //     style: heading4.copyWith(color: vampireBlack),
-                              //   ),
-                              // ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 8.h,
-                          ),
-                          Image.network(
-                            widget.buktiPenyelesaian,
-                            fit: BoxFit.cover,
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   SizedBox(

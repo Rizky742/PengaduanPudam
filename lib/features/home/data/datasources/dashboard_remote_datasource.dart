@@ -28,7 +28,7 @@ class DashboardRemoteDatasourceImpl implements DashboardRemoteDatasource {
     try {
       String baseUrl = await getBaseUrl();
       var url = Uri.parse("$baseUrl/home-mobile");
-      var body;
+      String body;
       print(petugasId);
       if (petugasId.isEmpty) {
         body = jsonEncode(
